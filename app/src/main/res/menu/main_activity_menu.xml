@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:title="@string/start_run" android:id="@+id/start_run"/>
+    <item android:title="@string/stop_run" android:id="@+id/stop_run"/>
+</menu>

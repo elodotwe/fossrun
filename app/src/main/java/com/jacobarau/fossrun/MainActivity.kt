@@ -1,9 +1,14 @@
 package com.jacobarau.fossrun
 
 import android.annotation.SuppressLint
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.support.v4.content.ContextCompat
 import android.support.v7.app.AppCompatActivity
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Toast
 import com.mapbox.android.core.permissions.PermissionsListener
 import com.mapbox.android.core.permissions.PermissionsManager
@@ -21,6 +26,8 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
     lateinit var mapView: MapView
     lateinit var presenter: MainActivityPresenter
 
+    val TAG = "MainActivity"
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         presenter = MainActivityPresenter(this)
@@ -31,6 +38,33 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         mapView = findViewById(R.id.mapView)
         mapView.onCreate(savedInstanceState)
         mapView.getMapAsync(this)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.main_activity_menu, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+        if (item == null) {
+            return false
+        }
+
+        Log.i(TAG, "item selected: " + item.itemId)
+
+        when (item.itemId) {
+            R.id.start_run -> Intent(this, TripRecorder::class.java).also { intent ->
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                    startForegroundService(intent)
+                } else {
+                    startService(intent)
+                }
+            }
+            R.id.stop_run -> Intent(this, TripRecorder::class.java)
+                .setAction("stop")
+                .also { intent -> startService(intent) }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onStart() {
