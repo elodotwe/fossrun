@@ -4,8 +4,8 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.support.v4.content.ContextCompat
-import android.support.v7.app.AppCompatActivity
+import androidx.core.content.ContextCompat
+import androidx.appcompat.app.AppCompatActivity
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
@@ -53,7 +53,9 @@ class MainActivity : AppCompatActivity(), OnMapReadyCallback, PermissionsListene
         Log.i(TAG, "item selected: " + item.itemId)
 
         when (item.itemId) {
-            R.id.start_run -> Intent(this, TripRecorder::class.java).also { intent ->
+            R.id.start_run -> Intent(this, TripRecorder::class.java)
+                .setAction("start")
+                .also { intent ->
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                     startForegroundService(intent)
                 } else {

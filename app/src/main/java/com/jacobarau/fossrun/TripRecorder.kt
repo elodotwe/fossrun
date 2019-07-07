@@ -1,14 +1,15 @@
 package com.jacobarau.fossrun
 
-import android.app.*
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.IBinder
-import android.support.v4.app.NotificationCompat
-import android.support.v4.app.NotificationManagerCompat
+import androidx.core.app.NotificationCompat
 import android.util.Log
-import java.util.*
 
 class TripRecorder : Service() {
     override fun onBind(intent: Intent?): IBinder? {
@@ -16,9 +17,12 @@ class TripRecorder : Service() {
     }
 
     private val channelID = "1"
+    private val TAG = "TripRecorder"
 
     private val ONGOING_NOTIFICATION_ID = 1
     override fun onCreate() {
+        Log.d(TAG, "onCreate")
+
         val pendingIntent: PendingIntent =
             Intent(this, MainActivity::class.java).let { notificationIntent ->
                 PendingIntent.getActivity(this, 0, notificationIntent, 0)
@@ -47,17 +51,27 @@ class TripRecorder : Service() {
             .build()
 
         startForeground(ONGOING_NOTIFICATION_ID, notification)
-
-
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        Log.d(TAG, "onStartCommand")
         if (intent != null) {
-            if (intent.action == "stop") {
-                stopSelf()
+            Log.d(TAG, "onStartCommand: $intent")
+            when (intent.action) {
+                "stop" -> stopRecording()
+                "start" -> startRecording()
             }
         }
 
         return START_STICKY
+    }
+
+    private fun stopRecording() {
+        getTripModel().stopTrip()
+        stopSelf()
+    }
+
+    private fun startRecording() {
+        getTripModel().startTrip()
     }
 }

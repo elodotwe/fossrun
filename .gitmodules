@@ -1,0 +1,3 @@
+[submodule "jpx"]
+	path = jpx
+	url = https://github.com/elodotwe/jpx.git
