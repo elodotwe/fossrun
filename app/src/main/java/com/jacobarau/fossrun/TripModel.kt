@@ -18,6 +18,8 @@ class TripModel(private val appContext: Context) {
     var activeTripName: String? = null
     private val locationList = LinkedList<Location>()
     private val TAG = "TripModel"
+    private var locationManager: LocationManager? = null
+    private var locationListener: LocationListener? = null
 
     fun startTrip() {
         if (activeTripName != null) return
@@ -30,10 +32,12 @@ class TripModel(private val appContext: Context) {
         Log.i(TAG, "startTrip: trip started with name $activeTripName")
 
         // Acquire a reference to the system Location Manager
-        val locationManager = appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        locationManager = appContext.getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
         // Define a listener that responds to location updates
-        val locationListener = object : LocationListener {
+
+        locationListener = object : LocationListener {
 
             override fun onLocationChanged(location: Location) {
                 Log.i(TAG, "onLocationChanged: $location")
@@ -55,8 +59,8 @@ class TripModel(private val appContext: Context) {
 
         // Register the listener with the Location Manager to receive location updates
         try {
-            locationManager.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0f, locationListener)
-            locationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, locationListener)
+            locationManager!!.requestLocationUpdates(LocationManager.NETWORK_PROVIDER, 0, 0f, locationListener)
+            locationManager!!.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0f, locationListener)
         } catch (e: SecurityException) {
             Log.e(TAG, "onCreate: failed to request location updates", e)
         }
@@ -64,6 +68,7 @@ class TripModel(private val appContext: Context) {
 
     fun stopTrip() {
         if (activeTripName == null) return
+        locationManager?.removeUpdates(locationListener)
         Log.i(TAG, "stopTrip: about to build GPX")
 
         val json = JSONObject()
@@ -88,9 +93,7 @@ class TripModel(private val appContext: Context) {
         } }.build()
 
         Log.i(TAG, "stopTrip: GPX built, writing to disk")
-//        appContext.filesDir.setReadable(true, false)
         val outFile = File(appContext.getExternalFilesDir(null), "$activeTripName.gpx")
-//        outFile.writeText(json.toString(4))
 
         GPX.write(gpx, outFile.outputStream())
         Log.i(TAG, "stopTrip: GPX written to ${outFile.absolutePath}")
