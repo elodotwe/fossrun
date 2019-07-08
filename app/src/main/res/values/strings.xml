@@ -4,9 +4,8 @@
     <string name="user_location_permission_explanation">Stuff and things</string>
     <string name="start_run">Start Run</string>
     <string name="stop_run">Stop Run</string>
-    <string name="notification_title">Foo</string>
-    <string name="notification_message">Bar</string>
-    <string name="ticker_text">Baz</string>
-    <string name="channel_name">channel name</string>
-    <string name="channel_description">channel description</string>
+    <string name="notification_title">Tracking your run!</string>
+    <string name="notification_message">Tap to see your stats.</string>
+    <string name="channel_name">Tracking in progress</string>
+    <string name="channel_description">Displays when FOSSRun is tracking your run.</string>
 </resources>

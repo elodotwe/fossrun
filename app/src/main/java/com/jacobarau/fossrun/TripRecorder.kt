@@ -66,7 +66,6 @@ class TripRecorder : Service() {
             .setContentText(getText(R.string.notification_message))
             .setSmallIcon(R.drawable.ic_notification)
             .setContentIntent(pendingIntent)
-            .setTicker(getText(R.string.ticker_text))
             .build()
 
         startForeground(ONGOING_NOTIFICATION_ID, notification)
